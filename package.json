@@ -14,10 +14,14 @@
     "@astrojs/db": "^0.14.2",
     "@astrojs/tailwind": "^5.1.1",
     "@astrojs/vercel": "^7.8.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/uuid": "^10.0.0",
     "astro": "^4.15.12",
+    "bcryptjs": "^2.4.3",
     "sweetalert2": "^11.14.2",
     "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "prettier": "^3.3.3",
