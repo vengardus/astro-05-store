@@ -1,0 +1,45 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import Navbar from "@/components/shared/Navbar.astro";
+import { siteInfo } from "src/config/constants";
+
+interface Props {
+  title?: string;
+  descritpion?: string;
+  isNavbar?: boolean;
+}
+const { 
+  title = siteInfo.title, 
+  descritpion=siteInfo.description, 
+  isNavbar=true 
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+     <meta name="description" content={descritpion} />
+     <meta name="author" content="Vengardus" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={descritpion} />
+
+    <title>{title ?? "Vengardus Page"}</title>
+    
+    <ViewTransitions />
+
+  </head>
+  
+  <body class="bg-slate-800 text-slate-100">
+    {isNavbar && <Navbar />}
+    <main class="mt-2 m-auto w-full max-w-4xl flex-grow px-4">
+      <slot />
+    </main>
+  </body><footer></footer>
+</html>
