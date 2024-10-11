@@ -29,7 +29,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
       {
         !isLoggedIn ? (
           <li class="font-semibold ">
-            <a href="/auth/login">Ingresar</a>
+            <a href="/auth/login" data-astro-reload>Ingresar</a>
           </li>
         ) : (
           <li class="font-semibold ">
@@ -45,11 +45,13 @@ const { isLoggedIn, isAdmin } = Astro.locals;
   </div>
 </nav>
 
-<script >
+<script>
 
-  console.log("Script y la c...")
+const { signOut } = await import('auth-astro/client');
+console.log("Script y la c...")
+document.addEventListener('astro:page-load', () => {
 
-  const { signOut } = await import('auth-astro/client');
+
 
   const logoutElem = document.querySelector('#logout') as HTMLLIElement;
 
@@ -57,4 +59,6 @@ const { isLoggedIn, isAdmin } = Astro.locals;
     await signOut();
     window.location.href = '/';
   });
+
+})
 </script>

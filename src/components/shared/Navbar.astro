@@ -35,7 +35,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
                     !item.options 
                     ? (
                       item.label && item.label == "logout"
-                      ?<buttom id="logout" class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</buttom>
+                      ?<a href="#" id="logout" data-astro-reload  class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                       :
                       <a href={item.path} class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                     ) 
@@ -109,7 +109,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
           :!item.options
           ? (
             item.label && item.label == "logout"
-            ? <a href="#" id="logout-mobile" class="block px-3 py-2 rounded-md text-base font-medium hover:text-blue-500" @click="openMobileMenu = false">{item.name}</a>
+            ? <a href="#" id="logout-mobile" data-astro-reload  class="block px-3 py-2 rounded-md text-base font-medium hover:text-blue-500" @click="openMobileMenu = false">{item.name}</a>
             : <a href={item.path} class="block px-3 py-2 rounded-md text-base font-medium hover:text-blue-500" @click="openMobileMenu = false">{item.name}</a>
           )
           : (
@@ -138,31 +138,29 @@ const { isLoggedIn, isAdmin } = Astro.locals;
 
 
 <script>
+
   import { actions } from "astro:actions";
   import Swal from "sweetalert2";
   const { signOut } = await import("auth-astro/client");
 
   console.log('Carga Script');
 
-  const logoutExecuted = async () => {  
-    await signOut();
-    window.location.href = '/';
-  }
+  document.addEventListener('astro:page-load', () => {
+    const logoutExecuted = async () => {  
+      await signOut();
+      window.location.href = '/';
+    }
 
-  document.addEventListener('DOMContentLoaded', () => {
     const logout = document.querySelector('#logout') as HTMLButtonElement;
     logout?.addEventListener('click', () => {
       logoutExecuted();
     });
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const logout = document.querySelector('#logout-mobile') as HTMLButtonElement;
-    logout?.addEventListener('click', () => {
+  
+    const logoutMobile = document.querySelector('#logout-mobile') as HTMLButtonElement;
+    logoutMobile?.addEventListener('click', () => {
       logoutExecuted();
     });
   })
-  
 </script>
 
 <script src="//unpkg.com/alpinejs" defer></script>
