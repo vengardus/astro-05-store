@@ -1,0 +1,16 @@
+---
+import { actions } from "astro:actions";
+import type { ProductWithImages } from "@/interfaces/products/product-with-images.interface";
+import MainLayout from "@/layouts/MainLayout.astro";
+
+
+const resp =  await Astro.callAction(actions.getAllProductsByPage.orThrow, {});
+const products:ProductWithImages[] = (resp.success )? resp.data : [];
+console.log("resp:::", products);
+
+---
+
+
+<MainLayout title="Vengardus - Store">
+  <h1 class="text-3xl text-blue-500">Store</h1>
+</MainLayout>
