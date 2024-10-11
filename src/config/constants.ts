@@ -16,8 +16,8 @@ export const NAVBAR_OPTIONS: Navbar[] = [
     label: "protected",
   },
   {
-    name: "Clientes",
-    path: "/clients",
+    name: "Dashboard",
+    path: "/dashboard",
     //label: "protected",
   },
   {

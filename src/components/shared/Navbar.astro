@@ -5,7 +5,8 @@ const currentPath = Astro.url.pathname;
 const navBarOptions = NAVBAR_OPTIONS;
 
 //console.log(Astro.locals) 
-const {isLoggedIn} = Astro.locals;
+const { isLoggedIn, isAdmin } = Astro.locals;
+
 ---
 
 <nav class="bg-gray-800 text-white" x-data="{ openMobileMenu: false, openSubMenu: false }">
@@ -19,7 +20,9 @@ const {isLoggedIn} = Astro.locals;
           <div class="ml-10 flex items-baseline space-x-7">
             {
               navBarOptions.map((item) => (
-                  (isLoggedIn && item.label == "login")
+                  (!isAdmin && item.path.startsWith("/dashboard"))
+                  ? <></>
+                  :(isLoggedIn && item.label == "login")
                   ? <></>
                   :(!isLoggedIn && item.label == "logout" )
                   ? <></>
@@ -32,7 +35,7 @@ const {isLoggedIn} = Astro.locals;
                     !item.options 
                     ? (
                       item.label && item.label == "logout"
-                      ?<a href="#" id="logout" class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
+                      ?<buttom id="logout" class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</buttom>
                       :
                       <a href={item.path} class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                     ) 
@@ -137,56 +140,29 @@ const {isLoggedIn} = Astro.locals;
 <script>
   import { actions } from "astro:actions";
   import Swal from "sweetalert2";
+  const { signOut } = await import("auth-astro/client");
 
-  function handleLogout(event: Event) {
-    event.preventDefault();  // Prevenir comportamiento por defecto
-    actions.logoutUser.orThrow().then(resp => {
-      console.log('Ejecutando logout');
-      if (!resp.success) {
-        Swal.fire({
-          icon: "error",
-          title: "Error al hacer logout",
-          text: resp.message,
-        });
-      } else {
-        window.location.href = '/';
-      }
-    }).catch(error => {
-      console.error('Error:', error);
-    });
-  }
+  console.log('Carga Script');
 
-  function setupLogoutHandlers(entries: IntersectionObserverEntry[], observer: IntersectionObserver) {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const logout = entry.target.querySelector('#logout');
-        const logout_mobile = entry.target.querySelector('#logout-mobile');
-
-        if (logout) {
-          logout.removeEventListener('click', handleLogout);
-          logout.addEventListener('click', handleLogout);
-        }
-
-        if (logout_mobile) {
-          logout_mobile.removeEventListener('click', handleLogout);
-          logout_mobile.addEventListener('click', handleLogout);
-        }
-        
-        observer.unobserve(entry.target);  // Dejar de observar una vez configurado
-      }
-    });
+  const logoutExecuted = async () => {  
+    await signOut();
+    window.location.href = '/';
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const observer = new IntersectionObserver(setupLogoutHandlers, { threshold: 0.1 });
-
-    // Observar las secciones relevantes del DOM
-    observer.observe(document.body);
-
-    document.addEventListener('astro:afterRender', () => {
-      observer.observe(document.body);
+    const logout = document.querySelector('#logout') as HTMLButtonElement;
+    logout?.addEventListener('click', () => {
+      logoutExecuted();
     });
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const logout = document.querySelector('#logout-mobile') as HTMLButtonElement;
+    logout?.addEventListener('click', () => {
+      logoutExecuted();
+    });
+  })
+  
 </script>
 
 <script src="//unpkg.com/alpinejs" defer></script>

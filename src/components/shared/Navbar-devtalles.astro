@@ -1,0 +1,60 @@
+
+---
+
+const { isLoggedIn, isAdmin } = Astro.locals;
+---
+
+<!-- component -->
+<nav
+  class="flex justify-between px-20 py-10 items-center fixed top-0 w-full z-10 h-20"
+  
+>
+  <h1 class="text-xl  font-bold">
+    <a href="/">AstroStore</a>
+  </h1>
+  <div class="flex items-center">
+    <ul class="flex items-center space-x-6">
+
+      <li class="font-semibold ">
+        <a href="/">Home</a>
+      </li>
+      {
+        isAdmin ? (
+          <li class="font-semibold ">
+            <a href="/admin">Admin</a>
+          </li>
+        ) : null
+      }
+
+      {
+        !isLoggedIn ? (
+          <li class="font-semibold ">
+            <a href="/auth/login">Ingresar</a>
+          </li>
+        ) : (
+          <li class="font-semibold ">
+            <a href="/clients">Clientes</a>
+          </li>
+
+          <li id="logout" class="font-semibold ">
+            <a href="#">Salir</a>
+          </li>
+        )
+      }
+    </ul>
+  </div>
+</nav>
+
+<script >
+
+  console.log("Script y la c...")
+
+  const { signOut } = await import('auth-astro/client');
+
+  const logoutElem = document.querySelector('#logout') as HTMLLIElement;
+
+  logoutElem?.addEventListener('click', async () => {
+    await signOut();
+    window.location.href = '/';
+  });
+</script>

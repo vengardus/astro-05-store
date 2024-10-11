@@ -3,6 +3,7 @@ import AuthLoyout from "@/layouts/AuthLoyout.astro";
 const email = Astro.cookies.get("email")?.value ?? "";
 const rememberMe = !!email;
 ---
+
 <!-- component -->
 <div
   class="absolute bg-gradient-to-b from-green-500 to-green-400 opacity-75 inset-0 z-0"
@@ -48,7 +49,7 @@ const rememberMe = !!email;
               type="checkbox"
               class="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
             />
-            <label for="remember_me" class="ml-2 block text-sm text-gray-800">
+            <label for="rememberMe" class="ml-2 block text-sm text-gray-800">
               Recuérdame
             </label>
           </div>
@@ -100,18 +101,20 @@ const rememberMe = !!email;
 
 <script>
   import { actions } from "astro:actions";
-  // import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-  // import { firebaseClient } from "src/firebase/config-client";
   import Swal from "sweetalert2";
 
   const form = document.querySelector("form") as HTMLFormElement;
   const btnSubmit = document.querySelector("#btn-submit") as HTMLButtonElement;
   const btnGoogle = document.querySelector("#btn-goolgle") as HTMLButtonElement;
 
+  const { signIn } = await import("auth-astro/client");
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     btnSubmit.setAttribute("disabled", "disabled");
     const formData = new FormData(form);
+
+   
 
     // Para ver todos los pares clave-valor en consola del nbavegador
     for (let pair of formData.entries()) {
@@ -119,64 +122,73 @@ const rememberMe = !!email;
     }
     // ---
 
-    const response = await actions.loginUser.orThrow(formData);
-    if (!response.success) {
+    //const response = await actions.loginUser.orThrow(formData);
+
+    const resp = await signIn("credentials", {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      redirect: false,
+    });
+
+    const respData = await resp?.json();
+    
+    console.log("resp:::", { respdata: respData });
+    
+    if (resp) {
       Swal.fire({
         icon: "error",
-        title: "Credenciales no son correctas",
-        text: response.message,
+        title: "Credenciales no son correctas!",
+        text: "Usuario o contraseña incorrectos",
       });
+      console.log('eddddddddddddddddddddddddddddddddddddddddddddddddddd')
       btnSubmit.removeAttribute("disabled");
-      return;
+      //return;
     }
-    window.location.replace("/protected");
+    else {
+      console.log("resp!!::", { respData });
+      window.location.replace("/");
+    }
   });
-
 
   btnGoogle.addEventListener("click", async () => {
     btnGoogle.setAttribute("disabled", "disabled");
-    
+
     console.log("btnGoogle");
 
     //const provider = new GoogleAuthProvider();
     try {
+      // Obtener las variables de entorno de firebase (lado del servidor)
+      const resp = await actions.getEnv.orThrow({ key: "FIREBASE_API_KEY" });
+      const apikey = resp.data;
+      const resp2 = await actions.getEnv.orThrow({ key: "FIREBASE_API_ID" });
+      const apiId = resp2.data;
 
-        // Obtener las variables de entorno de firebase (lado del servidor)
-        const resp = await actions.getEnv.orThrow({key:"FIREBASE_API_KEY"})
-        const apikey = resp.data
-        const resp2 = await actions.getEnv.orThrow({key:"FIREBASE_API_ID"})
-        const apiId = resp2.data
+      console.log("KEYS", apikey, apiId);
 
-        console.log('KEYS', apikey, apiId)
+      // Paso 1: OIbtener credenciales del lado del cliente
+      //const credentials = await signInWithPopup(firebaseClient(apikey, apiId).auth, provider);
 
-        // Paso 1: OIbtener credenciales del lado del cliente
-        //const credentials = await signInWithPopup(firebaseClient(apikey, apiId).auth, provider);
-        
-        // Paos 2: Verificar credenciales en el servidor
-        //console.log("credential", credentials);
-        //const response = await actions.loginUserWithGoogle.orThrow(credentials);
-        
-        // if (!response?.success) {
-        //   Swal.fire({
-        //     icon: "error",
-        //     title: "Credenciales no son correctas",
-        //     text: response.message,
-        //   });
-        //   btnGoogle.removeAttribute("disabled");
-        //   return;
-        // }
-        
-        btnGoogle.innerText = "Redireccionando...";
-        window.location.replace("/protected");
-        
-      } catch (error) {
-        console.log("error", error);
-        btnGoogle.removeAttribute("disabled");
+      // Paos 2: Verificar credenciales en el servidor
+      //console.log("credential", credentials);
+      //const response = await actions.loginUserWithGoogle.orThrow(credentials);
+
+      // if (!response?.success) {
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Credenciales no son correctas",
+      //     text: response.message,
+      //   });
+      //   btnGoogle.removeAttribute("disabled");
+      //   return;
+      // }
+
+      btnGoogle.innerText = "Redireccionando...";
+      window.location.replace("/protected");
+    } catch (error) {
+      console.log("error", error);
+      btnGoogle.removeAttribute("disabled");
     }
 
     btnGoogle.removeAttribute("disabled");
-  }); 
-
-
-
+  });
 </script>
