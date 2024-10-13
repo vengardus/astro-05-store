@@ -18,7 +18,7 @@ const images = resp.data.images as string[];
   >
   <!-- <h1 class="text-2xl font-bold">{product.title}</h1> -->
 
-  <div class="grid grid-cols-1 md:grid-cols-3 w-full">
+  <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4 ">
     <ProductSlideShow images={images} />
 
     <section>
@@ -36,12 +36,12 @@ const images = resp.data.images as string[];
 
       <h3 class="mt-5">Cantidad</h3>
       <div>
-        <button class="btn-quantity">-</button>
-        <input type="number" min="1" value="1" />
-        <button class="btn-quantity">+</button>
+        <button id="decrement-button" class="btn-quantity">-</button>
+        <input id="quantity" type="number" min="1" value="1" class="text-gray-800" />
+        <button id="increment-button" class="btn-quantity">+</button>
       </div>
 
-      <button class="mt-5 bg-blue-500 text-white p-3 w-full"
+      <button id="add-to-cart" class="mt-5 bg-blue-500 text-white p-3 w-full disabled:bg-gray-500"
         >Añadir al carrito</button
       >
 
@@ -52,6 +52,52 @@ const images = resp.data.images as string[];
 
   <input type="hidden" id="product-id" value={product.id} />
 </MainLayout>
+
+
+<script>
+  const sizeElements = document.querySelectorAll('li');
+
+  sizeElements.forEach((liElement) => {
+    liElement.addEventListener('click', () => {
+      sizeElements.forEach((li) => li.classList.remove('selected-size'));
+      liElement.classList.add('selected-size');
+    })
+  })
+
+  const quantityInput = document.querySelector('#quantity') as HTMLInputElement
+  const productIdInput = document.querySelector('#product-id') as HTMLInputElement
+
+  let quantity = 1;
+
+  const decrementButton = document.querySelector('#decrement-button') as HTMLButtonElement;
+  const incrementButton = document.querySelector('#increment-button') as HTMLButtonElement;
+  const addToCartButton = document.querySelector('#add-to-cart') as HTMLButtonElement;
+
+
+  incrementButton.addEventListener('click', () => {
+    console.log("click")
+    quantity = Math.min(quantity + 1, 5);
+    quantityInput.value = quantity.toString();
+  })
+
+  decrementButton.addEventListener('click', () => {
+    quantity = Math.max(quantity - 1, 1);
+    quantityInput.value = quantity.toString();
+  })
+
+  addToCartButton.addEventListener('click', () => {
+    const size = document.querySelector('.selected-size')?.textContent;
+    if (!size) return alert("Selecciona una talla"); 
+    console.log("add to cart", {
+      id:productIdInput.value, 
+      quantity, 
+      size
+  });
+  })
+
+</script>
+
+
 
 
 <style>

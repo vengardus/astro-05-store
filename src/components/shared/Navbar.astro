@@ -1,5 +1,6 @@
 ---
 import { NAVBAR_OPTIONS } from "@/config/constants";
+import {CartCounter} from "@/components/cart/react/CartCounter";
 
 const currentPath = Astro.url.pathname;
 const navBarOptions = NAVBAR_OPTIONS;
@@ -19,7 +20,8 @@ const { isLoggedIn, isAdmin } = Astro.locals;
           <span class="text-2xl font-bold">Logo</span>
         </div>
         <div class="hidden md:block">
-          <div class="ml-10 flex items-baseline space-x-7">
+          <div class="ml-10 flex items-center space-x-7">
+            <CartCounter />
             {
               navBarOptions.map((item) => (
                   (!isAdmin && item.path.startsWith("/dashboard"))
