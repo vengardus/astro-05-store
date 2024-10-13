@@ -24,5 +24,6 @@
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
-  }
+  },
+  "exclude": ["node_modules", "dist", "build"]  
 }

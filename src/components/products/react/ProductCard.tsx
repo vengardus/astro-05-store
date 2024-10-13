@@ -13,7 +13,7 @@ export const ProductCard = ({ product }: Props) => {
 
   return (
     <a
-      href={`/products/${product.slug}`}
+      href={`/store/products/${product.slug}`}
       className="flex flex-col items-center justify-between h-full"
     >
       <img

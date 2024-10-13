@@ -6,12 +6,12 @@ import { siteInfo } from "src/config/constants";
 
 interface Props {
   title?: string;
-  descritpion?: string;
+  description?: string;
   isNavbar?: boolean;
 }
 const { 
   title = siteInfo.title, 
-  descritpion=siteInfo.description, 
+  description=siteInfo.description, 
   isNavbar=true 
 } = Astro.props;
 ---
@@ -24,12 +24,12 @@ const {
     <meta name="generator" content={Astro.generator} />
 
     <!-- SEO -->
-     <meta name="description" content={descritpion} />
+     <meta name="description" content={description} />
      <meta name="author" content="Vengardus" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={descritpion} />
+    <meta property="og:description" content={description} />
 
     <title>{title ?? "Vengardus Page"}</title>
     

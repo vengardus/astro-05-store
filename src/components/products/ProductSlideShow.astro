@@ -1,0 +1,15 @@
+---
+interface Props {
+  images: string[];
+}
+
+const { images } = Astro.props;
+---
+
+<div>
+  <img
+    src={images[0]}
+    alt={images[0]}
+    class="w-full h-64 object-contain cursor-pointer"
+  />
+</div>

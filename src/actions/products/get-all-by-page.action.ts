@@ -3,7 +3,7 @@ import type { ResponseAction } from "@/interfaces/app/response.interface";
 import type { ProductWithImages } from "@/interfaces/products/product-with-images.interface";
 import { getActionError } from "@/utils/get-action-error";
 import { initResponseAction } from "@/utils/init-response";
-
+ 
 export const getAllByPage = async ({
   page = 1,
   limit = 12,

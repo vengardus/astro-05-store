@@ -1,6 +1,6 @@
 import { getEnv } from "./app/index.action";
 import { loginUser, loginUserWithGoogle, logoutUser, registerUser } from "./auth/index.action";
-import { getAllProductsByPage } from "./products/index.action";
+import { getAllProductsByPage, getProducBySlug } from "./products/index.action";
 
 export const server = {
     // auth actions
@@ -13,5 +13,6 @@ export const server = {
     getEnv,
 
     // products
-    getAllProductsByPage
+    getAllProductsByPage,
+    getProducBySlug
 }
