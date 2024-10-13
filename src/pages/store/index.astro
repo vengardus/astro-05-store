@@ -2,16 +2,21 @@
 import { actions } from "astro:actions";
 import type { ProductWithImages } from "@/interfaces/products/product-with-images.interface";
 import MainLayout from "@/layouts/MainLayout.astro";
-import {ProductList} from "@/components/products/ProductList";
+import {ProductList} from "@/components/products/react/ProductList";
+import Pagination from "@/components/shared/Pagination.astro";
+
 
 const resp =  await Astro.callAction(actions.getAllProductsByPage.orThrow, {});
 const products:ProductWithImages[] = (resp.success )? resp.data : [];
-console.log("resp:::", products);
+const totalPages = resp.pagination?.totalPages ?? 0;
 
 ---
 
 
 <MainLayout title="Vengardus - Store">
-  <h1 class="text-3xl text-blue-500">Store</h1>
-  <ProductList products={products}/>
+  <h1 class="text-3xl text-blue-500">Lista de Productos</h1>
+
+  <ProductList products={products} client:idle/>
+
+  <Pagination totalPages={totalPages}/>
 </MainLayout>

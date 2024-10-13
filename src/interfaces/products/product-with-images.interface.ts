@@ -2,7 +2,7 @@
 export interface ProductWithImages {
   id: string;
   description: string;
-  images: string[];
+  images: string;
   stock: number;
   price: number;
   sizes: string;

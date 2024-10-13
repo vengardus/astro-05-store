@@ -1,0 +1,32 @@
+---
+interface Props {
+  totalPages: number
+}
+const pageParam = +(Astro.url.searchParams.get('page')?? 1)
+const { totalPages } = Astro.props
+
+const currentPage = Math.max((pageParam > totalPages) ? totalPages : pageParam, 1)
+
+const path = Astro.url.pathname
+---
+
+
+<section>
+  <div class="flex my-10 items-center gap-4"> 
+    <a href={`${path}?page=1`} class:list={["btn", {disabled: currentPage === 1}]}>{'<<'}</a>
+    <a href={`${path}?page=${Math.max(currentPage - 1, 1)}`} class:list={["btn", {disabled: currentPage === 1}]}>Anterior</a>
+    <a href={`${path}?page=${Math.min(currentPage + 1, totalPages)}`} class:list={["btn", {disabled: currentPage === totalPages}]}>Siguiente</a>
+    <a href={`${path}?page=${totalPages}`} class:list={["btn", {disabled: currentPage === totalPages}]}>{'>>'}</a>
+    <div class="flex-1"></div>
+    <span class="font-bold">Página {currentPage} de {totalPages}</span>
+  </div>
+</section>
+
+<style>
+  .btn {
+    @apply bg-blue-600 text-slate-100 p-2 rounded-md hover:bg-blue-700
+  }
+  .disabled {
+    @apply bg-gray-600 text-gray-400 hover:bg-gray-600;
+  }
+</style>
