@@ -24,7 +24,7 @@ export const getAllByPage = async ({
                 ( select * from ProductImage where productId = a.id limit 2 )
             ) as images
             from Product a
-            LIMIT 12 OFFSET 0;
+            LIMIT ${limit} OFFSET ${(page - 1) * limit};
         `;
 
       const { rows } = await db.run(productsQuery);
@@ -39,6 +39,7 @@ export const getAllByPage = async ({
     //       .offset((page - 1) * limit);
 
       resp.data = products;
+      console.log("products", products)
     }
 
     resp.success = true;

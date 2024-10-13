@@ -9,7 +9,9 @@ const { isLoggedIn, isAdmin } = Astro.locals;
 
 ---
 
-<nav class="bg-gray-800 text-white" x-data="{ openMobileMenu: false, openSubMenu: false }">
+<nav 
+  class="bg-gray-900 text-white w-full fixed top-0 z-10 h-16" 
+  x-data="{ openMobileMenu: false, openSubMenu: false }">
   <div class="max-w-7xl mx-auto px-2 sm:px-3">
     <div class="flex items-center h-16 ">
       <div class="flex items-center w-full justify-between">
