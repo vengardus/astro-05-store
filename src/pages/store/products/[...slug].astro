@@ -8,17 +8,14 @@ const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/");
 const resp = await Astro.callAction(actions.getProducBySlug.orThrow, { slug });
 if (!resp.success) return Astro.redirect("/store");
-const product = resp.data.product as Product ;
+const product = resp.data.product as Product;
 const images = resp.data.images as string[];
 ---
 
-<MainLayout
-  title={product.title}
-  description={product.description}
-  >
+<MainLayout title={product.title} description={product.description}>
   <!-- <h1 class="text-2xl font-bold">{product.title}</h1> -->
 
-  <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4 ">
+  <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4">
     <ProductSlideShow images={images} />
 
     <section>
@@ -29,7 +26,7 @@ const images = resp.data.images as string[];
       <ul class="flex gap-3">
         {
           product.sizes
-            .split(',')
+            .split(",")
             .map((size) => <li data-size={size}>{size}</li>)
         }
       </ul>
@@ -37,11 +34,19 @@ const images = resp.data.images as string[];
       <h3 class="mt-5">Cantidad</h3>
       <div>
         <button id="decrement-button" class="btn-quantity">-</button>
-        <input id="quantity" type="number" min="1" value="1" class="text-gray-800" />
+        <input
+          id="quantity"
+          type="number"
+          min="1"
+          value="1"
+          class="text-gray-800"
+        />
         <button id="increment-button" class="btn-quantity">+</button>
       </div>
 
-      <button id="add-to-cart" class="mt-5 bg-blue-500 text-white p-3 w-full disabled:bg-gray-500"
+      <button
+        id="add-to-cart"
+        class="mt-5 bg-blue-500 text-white p-3 w-full disabled:bg-gray-500"
         >Añadir al carrito</button
       >
 
@@ -53,52 +58,61 @@ const images = resp.data.images as string[];
   <input type="hidden" id="product-id" value={product.id} />
 </MainLayout>
 
-
 <script>
-  const sizeElements = document.querySelectorAll('li');
+  import { CartCookiesClient } from '@/utils/cart-cookies-client';
+  const sizeElements = document.querySelectorAll("li");
 
   sizeElements.forEach((liElement) => {
-    liElement.addEventListener('click', () => {
-      sizeElements.forEach((li) => li.classList.remove('selected-size'));
-      liElement.classList.add('selected-size');
-    })
-  })
+    liElement.addEventListener("click", () => {
+      sizeElements.forEach((li) => li.classList.remove("selected-size"));
+      liElement.classList.add("selected-size");
+    });
+  });
 
-  const quantityInput = document.querySelector('#quantity') as HTMLInputElement
-  const productIdInput = document.querySelector('#product-id') as HTMLInputElement
+  const quantityInput = document.querySelector("#quantity") as HTMLInputElement;
+  const productIdInput = document.querySelector(
+    "#product-id"
+  ) as HTMLInputElement;
 
   let quantity = 1;
 
-  const decrementButton = document.querySelector('#decrement-button') as HTMLButtonElement;
-  const incrementButton = document.querySelector('#increment-button') as HTMLButtonElement;
-  const addToCartButton = document.querySelector('#add-to-cart') as HTMLButtonElement;
+  const decrementButton = document.querySelector(
+    "#decrement-button"
+  ) as HTMLButtonElement;
+  const incrementButton = document.querySelector(
+    "#increment-button"
+  ) as HTMLButtonElement;
+  const addToCartButton = document.querySelector(
+    "#add-to-cart"
+  ) as HTMLButtonElement;
 
-
-  incrementButton.addEventListener('click', () => {
-    console.log("click")
+  incrementButton.addEventListener("click", () => {
+    console.log("click");
     quantity = Math.min(quantity + 1, 5);
     quantityInput.value = quantity.toString();
-  })
+  });
 
-  decrementButton.addEventListener('click', () => {
+  decrementButton.addEventListener("click", () => {
     quantity = Math.max(quantity - 1, 1);
     quantityInput.value = quantity.toString();
-  })
-
-  addToCartButton.addEventListener('click', () => {
-    const size = document.querySelector('.selected-size')?.textContent;
-    if (!size) return alert("Selecciona una talla"); 
-    console.log("add to cart", {
-      id:productIdInput.value, 
-      quantity, 
-      size
   });
-  })
 
+  addToCartButton.addEventListener("click", () => {
+    const size = document.querySelector(".selected-size")?.textContent;
+    if (!size) return alert("Selecciona una talla");
+    console.log("add to cart", {
+      id: productIdInput.value,
+      quantity,
+      size,
+    });
+    CartCookiesClient.addItem({
+      productId: productIdInput.value,
+      quantity,
+      size,
+    })
+    window.location.href = "/store/cart";
+  });
 </script>
-
-
-
 
 <style>
   h3 {
@@ -121,13 +135,13 @@ const images = resp.data.images as string[];
     @apply w-16 text-center p-2 border border-gray-300;
   }
 
-  input[type='number']::-webkit-outer-spin-button,
-  input[type='number']::-webkit-inner-spin-button {
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
 
-  input[type='number'] {
+  input[type="number"] {
     -moz-appearance: textfield; /* Para Firefox */
   }
 </style>

@@ -1,0 +1,23 @@
+---
+import type { CartItem } from "@/interfaces/cart/cart-item.interface";
+import MainLayout from "@/layouts/MainLayout.astro";
+
+const cartCookie = Astro.cookies.get('cart');
+
+const cart = JSON.parse(cartCookie? cartCookie?.value : '[]') as CartItem[];
+
+console.log({cart})
+---
+
+<MainLayout title="Vengardus - Cart">
+  <h1 class="text-3xl text-blue-500">Cart</h1>
+  {
+    cart.map((item) => (
+      <div class="flex gap-4">
+        <p>{item.productId}</p>
+        <p>{item.size}</p>
+        <p>{item.quantity}</p>
+      </div>
+    ))
+  }
+</MainLayout>
