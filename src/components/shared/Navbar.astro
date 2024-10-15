@@ -21,7 +21,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
         </div>
         <div class="hidden md:block">
           <div class="ml-10 flex items-center space-x-7">
-            <CartCounter />
+            <CartCounter client:load/>
             {
               navBarOptions.map((item) => (
                   (!isAdmin && item.path.startsWith("/dashboard"))
@@ -41,7 +41,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
                       item.label && item.label == "logout"
                       ?<a href="#" id="logout" data-astro-reload  class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                       :
-                      <a href={item.path} class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
+                      <a href={item.path}  class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                     ) 
                     : (
                       // Sub-Opcionts

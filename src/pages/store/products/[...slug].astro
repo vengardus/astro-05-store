@@ -59,7 +59,9 @@ const images = resp.data.images as string[];
 </MainLayout>
 
 <script>
+  console.log("script:sluig-product")
   import { CartCookiesClient } from '@/utils/cart-cookies-client';
+  import { itemsInCart } from '@/store/cart.store';
   const sizeElements = document.querySelectorAll("li");
 
   sizeElements.forEach((liElement) => {
@@ -105,12 +107,17 @@ const images = resp.data.images as string[];
       quantity,
       size,
     });
-    CartCookiesClient.addItem({
+    const cart = CartCookiesClient.addItem({
       productId: productIdInput.value,
       quantity,
       size,
     })
-    window.location.href = "/store/cart";
+
+    itemsInCart.set(cart.length);
+    console.log(itemsInCart.get());
+
+    // TODO: se modifcará con ViewTransitions
+    //window.location.href = "/store/cart";
   });
 </script>
 

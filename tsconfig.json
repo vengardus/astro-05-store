@@ -20,6 +20,9 @@
       ],
       "@/images/*": [
         "src/assets/images/*"
+      ],
+      "@/store/*": [
+        "src/store/*"
       ]
     },
     "jsx": "react-jsx",
