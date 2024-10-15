@@ -40,15 +40,22 @@ const { cartItems } = Astro.props;
 }
 
 <script>
+  import { CartCookiesClient } from "@/utils/cart-cookies-client";
   const deleteButtons:NodeListOf<HTMLButtonElement> = document.querySelectorAll(".btn-delete");
 
   deleteButtons.forEach((btn) => {
     btn.addEventListener("click", (event) => {
       //event.preventDefault();
       const target = event.target as HTMLButtonElement;
-      const productId = target.dataset.id;
-      const size = target.dataset.size;
+      const productId = target.dataset.id?? '';
+      const size = target.dataset.size?? '';
       console.log("delete", productId, size);
+
+      CartCookiesClient.removeIten(productId, size);
+
+      // TODO: Reload page temporal
+
+      window.location.reload();
     });
   });
   
