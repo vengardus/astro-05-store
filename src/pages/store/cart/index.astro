@@ -1,23 +1,36 @@
 ---
-import type { CartItem } from "@/interfaces/cart/cart-item.interface";
+import type { CartItemExtends } from "@/interfaces/cart/cart-item-extends.interface";
 import MainLayout from "@/layouts/MainLayout.astro";
+import { actions } from "astro:actions";
+import CartList from "@/components/cart/CartList.astro";
+import CartTotals from "@/components/cart/CartTotals.astro";
 
-const cartCookie = Astro.cookies.get('cart');
 
-const cart = JSON.parse(cartCookie? cartCookie?.value : '[]') as CartItem[];
+const resp = await Astro.callAction(actions.getCartFromCookies.orThrow, {})
 
-console.log({cart})
+if (!resp.success) return Astro.redirect("/store")
+const cart = resp.data as CartItemExtends[]
 ---
 
 <MainLayout title="Vengardus - Cart">
-  <h1 class="text-3xl text-blue-500">Cart</h1>
-  {
-    cart.map((item) => (
-      <div class="flex gap-4">
-        <p>{item.productId}</p>
-        <p>{item.size}</p>
-        <p>{item.quantity}</p>
-      </div>
-    ))
-  }
+  <h1 class="text-3xl text-blue-500">Carrito</h1>
+
+  <section class="grid grid-cols-1 gap-x-4 gap-y-7 sm:grid-cols-2">
+    <div class="order-2 sm:order-1">
+      <h2>Productos</h2>
+      <a href="#" onclick="history.back(); return false;" class="text-blue-500 hover:underline">Regresar</a>
+      <CartList cartItems={cart} />
+    </div>
+
+    <div>
+      <CartTotals cartItems={cart} />
+    </div>
+
+  </section>
+
+
+
+
+
+  
 </MainLayout>

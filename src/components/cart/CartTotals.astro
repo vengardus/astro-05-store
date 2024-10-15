@@ -1,0 +1,40 @@
+---
+import type { CartItemExtends } from "@/interfaces/cart/cart-item-extends.interface";
+import { Formatter } from "@/utils/formatter";
+
+interface Props {
+  cartItems: CartItemExtends[]
+}
+const { cartItems } = Astro.props;
+
+const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+---
+
+<div class="bg-black h-[330px] text-white p-6 rounded-lg shadow-lg order-1">
+  <h2 class="text-lg font-semibold mb-4">Resumen de compra</h2>
+
+  <div class="flex justify-between text-gray-400 mb-2">
+    <span>Envío</span>
+    <span>Gratis</span>
+  </div>
+
+  <div class="flex justify-between text-gray-400 mb-4">
+    <span>SubTotal </span>
+    <span>{Formatter.currency(total)}</span>
+  </div>
+  <div class="flex justify-between text-gray-400 mb-4">
+    <span>Impuesto </span>
+    <span>{Formatter.currency(total * 0.15)}</span>
+  </div>
+
+  <div class="flex justify-between text-xl font-bold">
+    <span>Total</span>
+    <span>{Formatter.currency(total * 1.15)}</span>
+  </div>
+
+  <button
+    class="mt-10 w-full bg-blue-700 text-gray-300 py-3 rounded-lg hover:bg-gray-600 transition-all"
+  >
+    PAGAR
+  </button>
+</div>
