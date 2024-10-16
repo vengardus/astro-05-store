@@ -21,7 +21,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
         </div>
         <div class="hidden md:block">
           <div class="ml-10 flex items-center space-x-7">
-            <CartCounter client:load/>
+            <CartCounter client:load transition:persist/>
             {
               navBarOptions.map((item) => (
                   (!isAdmin && item.path.startsWith("/dashboard"))
@@ -39,7 +39,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
                     !item.options 
                     ? (
                       item.label && item.label == "logout"
-                      ?<a href="#" id="logout" data-astro-reload  class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
+                      ?<a href="#" id="logout" data-astro-reload-old  class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                       :
                       <a href={item.path}  class="px-3 py-2 rounded-md text-base font-medium hover:text-blue-500">{item.name}</a>
                     ) 
@@ -113,7 +113,7 @@ const { isLoggedIn, isAdmin } = Astro.locals;
           :!item.options
           ? (
             item.label && item.label == "logout"
-            ? <a href="#" id="logout-mobile" data-astro-reload  class="block px-3 py-2 rounded-md text-base font-medium hover:text-blue-500" @click="openMobileMenu = false">{item.name}</a>
+            ? <a href="#" id="logout-mobile" data-astro-reload-old  class="block px-3 py-2 rounded-md text-base font-medium hover:text-blue-500" @click="openMobileMenu = false">{item.name}</a>
             : <a href={item.path} class="block px-3 py-2 rounded-md text-base font-medium hover:text-blue-500" @click="openMobileMenu = false">{item.name}</a>
           )
           : (

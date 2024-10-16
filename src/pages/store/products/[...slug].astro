@@ -59,65 +59,77 @@ const images = resp.data.images as string[];
 </MainLayout>
 
 <script>
-  console.log("script:sluig-product")
-  import { CartCookiesClient } from '@/utils/cart-cookies-client';
-  import { itemsInCart } from '@/store/cart.store';
-  const sizeElements = document.querySelectorAll("li");
+  console.log("script:slug-product");
 
-  sizeElements.forEach((liElement) => {
-    liElement.addEventListener("click", () => {
-      sizeElements.forEach((li) => li.classList.remove("selected-size"));
-      liElement.classList.add("selected-size");
+  import { navigate } from "astro:transitions/client";
+  import { CartCookiesClient } from "@/utils/cart-cookies-client";
+  import { itemsInCart } from "@/store/cart.store";
+
+  document.addEventListener("astro:page-load", () => {
+    const sizeElements = document.querySelectorAll("li");
+
+    sizeElements.forEach((liElement) => {
+      liElement.addEventListener("click", () => {
+        sizeElements.forEach((li) => li.classList.remove("selected-size"));
+        liElement.classList.add("selected-size");
+      });
     });
-  });
 
-  const quantityInput = document.querySelector("#quantity") as HTMLInputElement;
-  const productIdInput = document.querySelector(
-    "#product-id"
-  ) as HTMLInputElement;
+    const quantityInput = document.querySelector(
+      "#quantity"
+    ) as HTMLInputElement;
+    const productIdInput = document.querySelector(
+      "#product-id"
+    ) as HTMLInputElement;
 
-  let quantity = 1;
+    let quantity = 1;
 
-  const decrementButton = document.querySelector(
-    "#decrement-button"
-  ) as HTMLButtonElement;
-  const incrementButton = document.querySelector(
-    "#increment-button"
-  ) as HTMLButtonElement;
-  const addToCartButton = document.querySelector(
-    "#add-to-cart"
-  ) as HTMLButtonElement;
+    const decrementButton = document.querySelector(
+      "#decrement-button"
+    ) as HTMLButtonElement;
+    const incrementButton = document.querySelector(
+      "#increment-button"
+    ) as HTMLButtonElement;
+    const addToCartButton = document.querySelector(
+      "#add-to-cart"
+    ) as HTMLButtonElement;
 
-  incrementButton.addEventListener("click", () => {
-    console.log("click");
-    quantity = Math.min(quantity + 1, 5);
-    quantityInput.value = quantity.toString();
-  });
+    if ( !productIdInput || !quantityInput || !decrementButton || !incrementButton || !addToCartButton) 
+      return 
 
-  decrementButton.addEventListener("click", () => {
-    quantity = Math.max(quantity - 1, 1);
-    quantityInput.value = quantity.toString();
-  });
-
-  addToCartButton.addEventListener("click", () => {
-    const size = document.querySelector(".selected-size")?.textContent;
-    if (!size) return alert("Selecciona una talla");
-    console.log("add to cart", {
-      id: productIdInput.value,
-      quantity,
-      size,
+    incrementButton.addEventListener("click", () => {
+      console.log("click");
+      quantity = Math.min(quantity + 1, 5);
+      quantityInput.value = quantity.toString();
     });
-    const cart = CartCookiesClient.addItem({
-      productId: productIdInput.value,
-      quantity,
-      size,
-    })
 
-    itemsInCart.set(cart.length);
-    console.log(itemsInCart.get());
+    decrementButton.addEventListener("click", () => {
+      quantity = Math.max(quantity - 1, 1);
+      quantityInput.value = quantity.toString();
+    });
 
-    // TODO: se modifcará con ViewTransitions
-    //window.location.href = "/store/cart";
+    addToCartButton.addEventListener("click", async() => {
+      const size = document.querySelector(".selected-size")?.textContent;
+      if (!size) return alert("Selecciona una talla");
+      console.log("add to cart", {
+        id: productIdInput.value,
+        quantity,
+        size,
+      });
+      const cart = CartCookiesClient.addItem({
+        productId: productIdInput.value,
+        quantity,
+        size,
+      });
+
+      itemsInCart.set(cart.length);
+      addToCartButton.disabled = true;
+      console.log(itemsInCart.get());
+
+      // TODO: se modifcará con ViewTransitions
+      //window.location.href = "/store/cart";
+      await navigate("/store/cart");
+    });
   });
 </script>
 

@@ -17,7 +17,7 @@ const { cartItems } = Astro.props;
         class="w-20 h-20 object-contain cursor-pointer"
       />
       <div class="">
-        <a href={`/store/cartItems/${item.slug}`} class="hover:underline">
+        <a href={`/store/products/${item.slug}`} class="hover:underline">
           {item.title}
         </a>
         <p>$ {item.price}</p>
@@ -40,23 +40,32 @@ const { cartItems } = Astro.props;
 }
 
 <script>
+  console.log("script:CarList.astro")
   import { CartCookiesClient } from "@/utils/cart-cookies-client";
-  const deleteButtons:NodeListOf<HTMLButtonElement> = document.querySelectorAll(".btn-delete");
+  import { navigate } from "astro:transitions/client";
+  import { itemsInCart } from "@/store/cart.store";
+  
+  document.addEventListener('astro:page-load', () => {
+    const deleteButtons:NodeListOf<HTMLButtonElement> = document.querySelectorAll(".btn-delete");
 
-  deleteButtons.forEach((btn) => {
-    btn.addEventListener("click", (event) => {
-      //event.preventDefault();
-      const target = event.target as HTMLButtonElement;
-      const productId = target.dataset.id?? '';
-      const size = target.dataset.size?? '';
-      console.log("delete", productId, size);
+    deleteButtons.forEach((btn) => {
+      btn.addEventListener("click", (event) => {
+        //event.preventDefault();
+        const target = event.target as HTMLButtonElement;
+        const productId = target.dataset.id?? '';
+        const size = target.dataset.size?? '';
+        console.log("delete", productId, size);
 
-      CartCookiesClient.removeIten(productId, size);
+        const cart = CartCookiesClient.removeIten(productId, size);
+        
+        itemsInCart.set(cart.length);
 
-      // TODO: Reload page temporal
-
-      window.location.reload();
+        // TODO: Reload page temporal
+        //window.location.reload();
+        navigate("/store/cart");
+      });
     });
-  });
+
+  })
   
 </script>

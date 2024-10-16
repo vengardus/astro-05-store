@@ -15,7 +15,7 @@ export const ProductCard = ({ product }: Props) => {
     <a
       href={`/store/products/${product.slug}`}
       className="flex flex-col items-center justify-between h-full"
-      data-astro-reload 
+      
     >
       <img
         src={currentImage}
