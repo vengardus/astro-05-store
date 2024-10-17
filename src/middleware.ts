@@ -5,7 +5,7 @@ const privateRoutes = ["/protected"];
 const notAuthenticatedRoutes = ["/auth/login", "/auth/register"];
 
 // `context` and `next` are automatically typed
-export const onRequest = defineMiddleware( async (context, next) => {
+export const onRequest = defineMiddleware(async (context, next) => {
   console.log("Middleware executed");
   //console.log(context.url);
 
@@ -23,7 +23,7 @@ export const onRequest = defineMiddleware( async (context, next) => {
       email: user.email!,
     };
 
-    console.log("middleware-user", user)
+    console.log("middleware-user", user);
 
     context.locals.isAdmin = user.role === "admin";
   }
@@ -32,7 +32,11 @@ export const onRequest = defineMiddleware( async (context, next) => {
     return context.redirect("/");
   }
 
-  if (!context.locals.isAdmin && context.url.pathname.startsWith("/dashboard")) {
+  if (
+    !context.locals.isAdmin &&
+    (context.url.pathname.startsWith("/dashboard") ||
+      context.url.pathname.startsWith("/admin"))
+  ) {
     return context.redirect("/");
   }
 

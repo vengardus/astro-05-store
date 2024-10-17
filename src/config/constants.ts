@@ -26,6 +26,11 @@ export const NAVBAR_OPTIONS: Navbar[] = [
     //label: "protected",
   },
   {
+    name: "Admin",
+    path: "/store/admin/dashboard",
+    //label: "protected",
+  },
+  {
     name: "Ingresar",
     path: "/auth/login",
     label: "login",

@@ -1,0 +1,68 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+
+import { actions } from "astro:actions";
+import type { ProductWithImages } from "@/interfaces/products/product-with-images.interface";
+import Pagination from "@/components/shared/Pagination.astro";
+import {Formatter} from "@/utils/formatter";
+
+
+const searchParams = Astro.url.searchParams;
+const page = +(searchParams.get('page') ?? 1);
+
+const resp =  await Astro.callAction(actions.getAllProductsByPage.orThrow, {page: page});
+
+if ( !resp.success ) Astro.redirect("/store")
+
+const products:ProductWithImages[] = resp.data?? [];
+const totalPages = resp.pagination?.totalPages ?? 0;
+---
+
+<MainLayout title="Vengardus - Panek Administrativo">
+  <h1 class="text-3xl text-blue-500">Productos</h1>
+
+  <div class="flex justify-end mb-5">
+    <a href="/store/admin/products/new" class="bg-blue-500 text-gray-50 p-2 hover:bg-blue-700 transition-all">Crear nuevo producto</a>
+  </div>
+
+  <table>
+    <thead> 
+      <tr>
+        <th class="w-2/12">Imagen</th>
+        <th class="w-4/12">Título</th>
+        <th class="w-2/12">Precio</th>
+        <th class="w-2/12">Inventario</th>
+        <th class="w-2/12">Acciones</th>
+    </thead>
+    <tbody>
+      {
+        products.map((product) => (
+          <tr>
+            <td>
+              <img 
+                src={Formatter.image(product.images.split(',')[0])} 
+                alt="" 
+                class="w-20 h-20 object-cover"
+              />
+            </td>
+            <td>
+              <a
+                href={`/store/admin/products/${product.slug}`}
+                class="hover:underline text-blue-400"
+              >
+              {product.title}
+              </a>
+            </td>
+            <td class="text-right">{product.price}</td>
+            <td class="text-right">{0}</td>
+            <td class="text-right">Eliminar</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <Pagination totalPages={totalPages}/>
+
+  
+
+</MainLayout>

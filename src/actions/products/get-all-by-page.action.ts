@@ -28,7 +28,10 @@ export const getAllByPage = async ({
         `;
 
       const { rows } = await db.run(productsQuery);
-      const products = rows as unknown as ProductWithImages[];
+      const products = (rows as unknown as ProductWithImages[]).map(product => ({
+        ...product,
+        images: product.images? product.images : 'no-image.png'
+      }));
 
     //   const products: { Product: IProduct; ProductImage: IProductImage }[] =
     //     await db

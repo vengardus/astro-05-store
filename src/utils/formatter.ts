@@ -6,4 +6,8 @@ export class Formatter {
       maximumFractionDigits: decimal,
     }).format(value);
   }
+
+  static image(value: string): string {
+    return value.startsWith("http") ? value : `${import.meta.env.PUBLIC_URL}/images/products/${value}`;
+  }
 }

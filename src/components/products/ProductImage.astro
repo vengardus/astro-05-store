@@ -1,0 +1,14 @@
+---
+import { Formatter } from "@/utils/formatter";
+
+interface Props {
+  src: string;
+  alt: string;
+  className?: string;
+}
+
+const { src, alt, className='' } = Astro.props;
+const fullSrc = Formatter.image(src)
+---
+
+<img src={fullSrc} alt={alt} class={className} />
