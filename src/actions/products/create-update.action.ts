@@ -19,7 +19,7 @@ export const createUpdate = async(form:ProductForm, context:ActionAPIContext): P
         if (!user) throw new Error('Usuario no autenticado')
 
         const isNewProduct = form.id === 'new'
-        const {id= UUID(), ...rest} = form
+        const {id= UUID(), imageFiles, ...rest} = form
         rest.slug = rest.slug?.toLowerCase().replace(' ', '-').trim()
         const product = {
             id,
@@ -29,10 +29,13 @@ export const createUpdate = async(form:ProductForm, context:ActionAPIContext): P
 
         console.log("product", product)
 
-        if (isNewProduct) 
-            await db.insert(Product).values(product)
-        else
-            await db.update(Product).set(product).where(eq(Product.id, id))
+        // if (isNewProduct) 
+        //     await db.insert(Product).values(product)
+        // else
+        //     await db.update(Product).set(product).where(eq(Product.id, id))
+
+        // Images
+        console.log("imageFiles", imageFiles)
 
         resp.data = {
             user,

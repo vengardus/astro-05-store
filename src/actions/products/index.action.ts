@@ -22,7 +22,17 @@ export const getProducBySlug = defineAction({
 });
 
 
-// Define the schema
+
+// Define the prductt schema
+const MAX_FILES = 5_000_000 // 5MB
+const ACCEPTED_IMAGE_TYPES = [
+  'image/png', 
+  'image/jpeg', 
+  'image/jpg', 
+  'image/webp', 
+  'image/svg+xml'
+]
+
 export const productSchema = z.object({
     id: z.string().optional(),
     description: z.string(),
@@ -34,6 +44,12 @@ export const productSchema = z.object({
     tags: z.string(),
     title: z.string(),
     type: z.string(),
+
+    imageFiles: z.array(
+      z.instanceof(File)
+        .refine((file) => file.size <= MAX_FILES, "El tamaño del archivo no puede superar los 5MB")
+        .refine( (file) => ACCEPTED_IMAGE_TYPES.includes(file.type), "El tipo de archivo no es permitido")
+    ).optional(),
 
   });
 
