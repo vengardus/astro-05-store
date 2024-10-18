@@ -27,7 +27,8 @@ export const getBySlug = async ({ slug }: Props): Promise<ResponseAction> => {
     const images = await db.select().from(ProductImage).where(eq(ProductImage.productId, product.id)).limit(2);
     resp.data = {
       product,
-      images: images.map(image => image.image)
+      //images: images.map(image => image.image)
+      images
     }
     resp.success = true
 

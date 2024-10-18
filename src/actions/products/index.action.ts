@@ -1,8 +1,9 @@
 import { defineAction } from "astro:actions";
-import { object, z } from "astro:schema";
+import { z } from "astro:schema";
 import { getAllByPage } from "./get-all-by-page.action";
 import { getBySlug } from "./get-by-slug.action";
 import { createUpdate } from "./create-update.action";
+import { deleteProductImage as deleteProductImageAction } from "./delete-product-image.action";
 
 export const getAllProductsByPage = defineAction({
   accept: "json",
@@ -57,4 +58,12 @@ export const createUpdateProduct = defineAction({
   accept: "form",
   input: productSchema,
   handler: async (form, context) => createUpdate(form, context),
+});
+
+export const deleteProductImage = defineAction({
+  accept: "json",
+  input: z.object({
+    imageId: z.string(),
+  }),
+  handler: async ( {imageId}, {request} ) => deleteProductImageAction(imageId, request)
 });

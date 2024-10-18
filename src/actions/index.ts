@@ -1,7 +1,7 @@
 import { getEnv } from "./app/index.action";
 import { loginUser, loginUserWithGoogle, logoutUser, registerUser } from "./auth/index.action";
 import { getCartFromCookies } from "./cart/index.action";
-import { createUpdateProduct, getAllProductsByPage, getProducBySlug } from "./products/index.action";
+import { createUpdateProduct, deleteProductImage, getAllProductsByPage, getProducBySlug } from "./products/index.action";
 
 export const server = {
     // auth actions
@@ -22,5 +22,6 @@ export const server = {
 
     // admin
     // products
-    createUpdateProduct
+    createUpdateProduct,
+    deleteProductImage
 }

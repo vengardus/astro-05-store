@@ -1,6 +1,7 @@
 ---
 import ProductImage from "@/components/products/ProductImage.astro";
 import ProductSlideShow from "@/components/products/ProductSlideShow.astro";
+import type { ProductImage as IProductImage } from "@/interfaces/products/product-image.interface";
 import type { Product } from "@/interfaces/products/product.interface";
 import MainLayout from "@/layouts/MainLayout.astro";
 import { actions } from "astro:actions";
@@ -31,7 +32,7 @@ else {
 }
 const product = _product as Product;
 
-const images = resp.data.images as string[];
+const images = resp.data.images as IProductImage[];
 ---
 
 <MainLayout title="Mantenimiento de producto">
@@ -243,7 +244,7 @@ const images = resp.data.images as string[];
         </div>
 
         <!-- Slideshow -->
-        <ProductSlideShow images={images} />
+        <ProductSlideShow images={images.map((image) => image.image)} />
 
         <table class="w-full border">
           <thead>
@@ -255,16 +256,20 @@ const images = resp.data.images as string[];
           <tbody>
             {
               images.map((image) => (
-                <tr class="border">
+                <tr class="border" id={image.id}>
                   <td class="flex justify-center">
                     <ProductImage
-                      src={image}
+                      src={image.image}
                       alt={product.title}
                       className="w-16 h-16 rounded"
                     />
                   </td>
                   <td class="text-center">
-                    <button class="btn-delete-image">X</button>
+                    <button 
+                      type="button"
+                      data-id={image.id}
+                      class="btn-delete-image"
+                    >X</button>
                   </td>
                 </tr>
               ))
@@ -284,7 +289,9 @@ const images = resp.data.images as string[];
     .active {
       @apply bg-blue-500 text-white;
     }
-    input {
+    input,
+    textarea,
+    select {
       color: black;
     }
   </style>
@@ -292,6 +299,7 @@ const images = resp.data.images as string[];
 
 <script>
   import { actions } from "astro:actions";
+  import { navigate } from "astro:transitions/client";
 
   document.addEventListener("astro:page-load", () => {
     const form = document.querySelector("form") as HTMLFormElement;
@@ -318,7 +326,37 @@ const images = resp.data.images as string[];
       console.log(formValues);
 
       const resp = await actions.createUpdateProduct.orThrow(formData);
-      console.log("resp", resp);
+
+      if (!resp.success || !resp.data.product) {
+        return alert(resp.message);
+      }
+
+      navigate(`/store/admin/products/${resp.data.product.slug}`);
     });
+
+
+    // Delete image
+    const btnsDeleteImage = document.querySelectorAll('.btn-delete-image');
+
+    btnsDeleteImage.forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        const id = btn.getAttribute('data-id');
+        if (!id) return;
+
+        const resp = await actions.deleteProductImage.orThrow({imageId:id});
+        if (!resp.success) return alert(resp.message);
+        
+        console.log("querySelector", `#${id}`)
+        const tr = document.getElementById(id)
+        if (!tr) return;
+        tr.remove();
+
+        // TODO: pendiente navigate slug, recuperar slug desde actoion
+        
+
+      });
+    });
+
+
   });
 </script>

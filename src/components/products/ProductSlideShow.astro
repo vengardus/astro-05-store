@@ -43,9 +43,9 @@ const fullImages = images.map(image => {
 <script>
   import Swiper from 'swiper';
   import { Pagination } from 'swiper/modules';
-
-  console.log('Carga Script-slider');
+  
   document.addEventListener('astro:page-load', () => {
+    console.log('Carga Script-slider');
     const swiper = new Swiper('.swiper', {
       modules: [Pagination],
       pagination: {

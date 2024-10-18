@@ -1,22 +1,23 @@
 ---
-import type { Product } from "@/interfaces/product.interface";
+import type { Product } from "@/interfaces/products/product.interface";
 import { actions } from "astro:actions";
 import MainLayout from "@/layouts/MainLayout.astro";
 import ProductSlideShow from "@/components/products/ProductSlideShow.astro";
+import type { ProductImage } from "@/interfaces/products/product-image.interface";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/");
 const resp = await Astro.callAction(actions.getProducBySlug.orThrow, { slug });
 if (!resp.success) return Astro.redirect("/store");
 const product = resp.data.product as Product;
-const images = resp.data.images as string[];
+const images = resp.data.images as ProductImage[];
 ---
 
 <MainLayout title={product.title} description={product.description}>
   <!-- <h1 class="text-2xl font-bold">{product.title}</h1> -->
 
   <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4">
-    <ProductSlideShow images={images} />
+    <ProductSlideShow images={images.map((image) => image.image)} />
 
     <section>
       <h2 class="text-2xl font-bold">{product.title}</h2>
