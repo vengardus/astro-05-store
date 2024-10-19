@@ -223,10 +223,10 @@ const images = resp.data.images as IProductImage[];
                   d="M7 16V4a2 2 0 012-2h6a2 2 0 012 2v12m-6 4l-4-4m0 0l4-4m-4 4h12"
                 ></path>
               </svg>
-              <p class="mb-2 text-sm text-gray-500" id="lbl-selected-files">
+              <p class="mb-2 text-sm text-gray-100" id="lbl-selected-files">
                 <span class="font-semibold">Click aquí </span> o arrastra los archivos
               </p>
-              <p class="text-xs text-gray-500">
+              <p class="text-xs text-gray-100">
                 SVG, PNG, JPG or GIF (max. 800x400px)
               </p>
             </div>
@@ -352,9 +352,68 @@ const images = resp.data.images as IProductImage[];
         tr.remove();
 
         // TODO: pendiente navigate slug, recuperar slug desde actoion
-        
 
       });
+    });
+
+
+    // Drag and Drop
+    const dropZone = document.getElementById("drop-zone") as HTMLDivElement;
+    const lblSelectedFiles = document.getElementById("lbl-selected-files") as HTMLParagraphElement;
+    const fileUpload = document.getElementById("file-upload") as HTMLInputElement;
+
+    if (!dropZone || !lblSelectedFiles || !fileUpload) {
+      console.error("Drop zone not found");
+      return;
+    }
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (e) => {
+        dropZone.classList.add("border-blue-200", "bg-blue-500");
+      });
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (e) => {
+        dropZone.classList.remove("border-blue-200", "bg-blue-500");
+      });
+    });
+
+
+    const createFileList = (files: File[]):FileList => {
+      const dataTransfer = new DataTransfer();
+      files.forEach((file) => {
+        dataTransfer.items.add(file);
+      });
+      return dataTransfer.files;
+    };
+
+    const handleFiles = (files: FileList) => {
+      const validFiles = Array.from(files).filter(
+        (file) => file.type.startsWith("image/")
+      )
+      console.log({validFiles});
+
+      if (fileUpload && validFiles.length > 0) 
+        fileUpload.files = createFileList(validFiles);
+
+      if (lblSelectedFiles) 
+        lblSelectedFiles.innerText = validFiles.length > 1 ? `${validFiles.length} archivos seleccionados` : `${validFiles[0].name}`
+      
+    }
+
+    // solo acepta imagenes
+    dropZone.addEventListener("drop", (e) => {
+      const files = e.dataTransfer?.files;
+      if (!files) return;
+      handleFiles(files);
     });
 
 
