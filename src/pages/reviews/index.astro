@@ -1,6 +1,11 @@
 ---
 import MainLayout from "@/layouts/MainLayout.astro";
 import PlaceCard from "@/components/reviews/PlaceCard.astro";
+import { actions } from "astro:actions";
+
+const resp = await Astro.callAction(actions.getAllTest.orThrow, {})
+console.log("resp::", resp)
+
 ---
 
 <MainLayout title="Vengardus - Reviews">

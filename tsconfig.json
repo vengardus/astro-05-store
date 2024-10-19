@@ -23,7 +23,10 @@
       ],
       "@/store/*": [
         "src/store/*"
-      ]
+      ],
+      "@/libs/*": [
+        "src/libs/*"
+      ],
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
