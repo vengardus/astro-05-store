@@ -21,6 +21,11 @@ export const NAVBAR_OPTIONS: Navbar[] = [
     //label: "protected",
   },
   {
+    name: "Reviews",
+    path: "/reviews",
+    //label: "protected",
+  },
+  {
     name: "Store",
     path: "/store",
     //label: "protected",
