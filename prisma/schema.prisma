@@ -1,0 +1,81 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["ast"]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Test01Model {
+  id          BigInt   @id @default(autoincrement())
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  description String?
+  type        String?
+  price       Float    @default(10)
+
+  @@map("a05_test01")
+  @@schema("ast")
+}
+
+model RoleModel {
+  id    String      @id @default(uuid()) 
+
+  name  String
+
+  users UserModel[]
+
+  @@map("ast_role")
+  @@schema("ast")
+}
+
+model UserModel {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  roleId    String    
+
+  role      RoleModel @relation(fields: [roleId], references: [id])
+  products  ProductModel[]
+
+  @@map("ast_user")
+  @@schema("ast")
+}
+
+model ProductModel {
+  id          String    @id @default(uuid()) 
+  description String
+  gender      String
+  price       Float
+  sizes       String
+  slug        String @unique
+  stock       Float
+  tags        String
+  title       String
+  type        String
+  userId      String 
+
+  user       UserModel @relation(fields: userId, references: id)
+  images     ProductImageModel[]
+
+  @@map("ast_product")
+  @@schema("ast")
+}
+
+model ProductImageModel {
+  id          String @id @default(uuid()) 
+  image       String
+  
+  product     ProductModel @relation(fields: productId, references: id)
+  productId   String 
+
+  @@map("ast_product_image")
+  @@schema("ast")
+}
+

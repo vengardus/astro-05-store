@@ -1,7 +1,5 @@
 import type { AstroCookies } from "astro";
 import type { ResponseAction } from "@/interfaces/app/response.interface";
-//import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
-// import { firebase } from "src/firebase/config";
 import { initResponseAction } from "@/utils/init-response";
 
 export const login = async (

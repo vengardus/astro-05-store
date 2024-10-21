@@ -1,8 +1,9 @@
 import type { ResponseAction } from "@/interfaces/app/response.interface";
+import prisma from "@/libs/prisma";
+import { getActionError } from "@/utils/get-action-error";
 import { initResponseAction } from "@/utils/init-response";
 import type { AstroCookies } from "astro";
-// import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, type AuthError } from "firebase/auth";
-// import { firebase } from "src/firebase/config";
+import  bcrypt from 'bcryptjs'
 
 export const register = async (
   data: { name: string; email: string; password: string; rememberMe?: boolean },
@@ -24,38 +25,30 @@ export const register = async (
     });
   }
 
+  console.log(name, email, password, rememberMe);
   // Creación de usuario
   try {
-    // await createUserWithEmailAndPassword(
-    //   firebase.auth,
-    //   email,
-    //   password,
-    // );
+    const role = await prisma.roleModel.findUnique({
+      where: { id: "user" },
+    })
 
-    // if ( ! firebase.auth.currentUser )
-    //   throw new Error("Ocurripo un error al registrar usuario");
+    if ( !role) throw new Error('Role not found')
 
-    // // Actualizar datos de usuario (display name)
-    // updateProfile(firebase.auth.currentUser, { 
-    //   displayName: name,
-    //   //photoURL: "https://i.pravatar.cc/300"
-    // });
+    const user = await prisma.userModel.create({
+      data: {
+        name,
+        email,
+        password: bcrypt.hashSync(password),
+        roleId: role.id
+      },
+    })
 
-    // // Verificar el correo electronico
-    // await sendEmailVerification(firebase.auth.currentUser, {
-    //   // url: `http://localhost:4321/protected?emailVerified=true`,
-    //   url: `${import.meta.env.WEBSITE_URL}/protected?emailVerified=true`,
-    // });
-
-    resp.success = true;
+    resp.success = true
+    resp.data = user;
     //return user;
   } catch (error) {
     console.log(error);
-    // const firebaseError = error as AuthError;
-    // if (firebaseError.code === "auth/email-already-in-use") 
-    //   resp.message = "El correo ya existe";
-    // else
-    //   resp.message = "Ocurripo un error al registrar usuario. Error: " + error; //throw new Error("Ocurripo un error al registrar usuario");
+    resp.message = getActionError(error);
   }
 
   return resp

@@ -14,4 +14,5 @@ export interface Product {
   gender: string;
 
   user?: string;
+  userId: string;
 }

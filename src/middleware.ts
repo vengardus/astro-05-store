@@ -23,7 +23,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       email: user.email!,
     };
 
-    console.log("middleware-user", user);
+    //console.log("middleware-user", user);
 
     context.locals.isAdmin = user.role === "admin";
   }
