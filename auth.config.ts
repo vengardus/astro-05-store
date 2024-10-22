@@ -1,7 +1,6 @@
 import prisma from '@/libs/prisma';
 import type { AdapterUser } from '@auth/core/adapters';
 import Credentials from '@auth/core/providers/credentials';
-//import { db, eq, User } from 'astro:db';
 import { defineConfig } from 'auth-astro';
 import bcrypt from 'bcryptjs'
 
