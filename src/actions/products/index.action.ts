@@ -49,7 +49,11 @@ export const productSchema = z.object({
     imageFiles: z.array(
       z.instanceof(File)
         .refine((file) => file.size <= MAX_FILES, "El tamaño del archivo no puede superar los 5MB")
-        .refine( (file) => ACCEPTED_IMAGE_TYPES.includes(file.type), "El tipo de archivo no es permitido")
+        .refine((file) => {
+          if (file.size === 0) return true;
+
+          return ACCEPTED_IMAGE_TYPES.includes(file.type);
+        }, `Only supported image files are valid, ${ACCEPTED_IMAGE_TYPES.join(',')}`)
     ).optional(),
 
   });

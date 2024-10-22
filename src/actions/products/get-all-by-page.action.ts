@@ -1,9 +1,10 @@
-import { count, db, Product, sql } from "astro:db";
+//import { count, db, Product, sql } from "astro:db";
 import type { ResponseAction } from "@/interfaces/app/response.interface";
 import type { ProductWithImages } from "@/interfaces/products/product-with-images.interface";
+import prisma from "@/libs/prisma";
 import { getActionError } from "@/utils/get-action-error";
 import { initResponseAction } from "@/utils/init-response";
- 
+
 export const getAllByPage = async ({
   page = 1,
   limit = 12,
@@ -12,37 +13,37 @@ export const getAllByPage = async ({
   page = page < 1 ? 1 : page;
 
   try {
-    const [totalRecords] = await db.select({ count: count() }).from(Product);
-    const totalPages = Math.ceil(totalRecords.count / limit);
+    //const [totalRecords] = await db.select({ count: count() }).from(Product);
+    const totalRecords = await prisma.productModel.count();
+    const totalPages = Math.ceil(totalRecords / limit);
 
     console.log("getAllByPage", page, limit, totalPages);
     if (page > totalPages) resp.data = [];
     else {
-      const productsQuery = sql`
-            select a.*,
-            ( select GROUP_CONCAT(image,',') from 
-                ( select * from ProductImage where productId = a.id limit 2 )
-            ) as images
-            from Product a
-            LIMIT ${limit} OFFSET ${(page - 1) * limit};
-        `;
+      // Consulta los productos y sus imágenes
+      const products = await prisma.productModel.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          images: {
+            take: 2, // Límite de imágenes
+          },
+        },
+        orderBy: {
+          title: "asc",
+        },
+      });
 
-      const { rows } = await db.run(productsQuery);
-      const products = (rows as unknown as ProductWithImages[]).map(product => ({
+      // Mapea los productos y ajusta el formato de las imágenes
+      const productsWithImages: ProductWithImages[] = products.map((product) => ({
         ...product,
-        images: product.images? product.images : 'no-image.png'
+        images: product.images.length
+          ? product.images.map((img) => img.image).join(",")
+          : "no-image.png",
       }));
 
-    //   const products: { Product: IProduct; ProductImage: IProductImage }[] =
-    //     await db
-    //       .select()
-    //       .from(Product)
-    //       .innerJoin(ProductImage, eq(ProductImage.productId, Product.id))
-    //       .limit(limit)
-    //       .offset((page - 1) * limit);
-
-      resp.data = products;
-      console.log("products", products)
+      resp.data = productsWithImages;
+      console.log("products", products);
     }
 
     resp.success = true;

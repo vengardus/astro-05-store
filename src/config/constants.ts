@@ -26,6 +26,11 @@ export const NAVBAR_OPTIONS: Navbar[] = [
     //label: "protected",
   },
   {
+    name: "Seed",
+    path: "/store/seed",
+    //label: "protected",
+  },
+  {
     name: "Store",
     path: "/store",
     //label: "protected",

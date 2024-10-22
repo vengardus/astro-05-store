@@ -5,7 +5,7 @@ import { actions } from "astro:actions";
 
 const resp = await Astro.callAction(actions.getAllTest.orThrow, {})
 console.log("resp:", resp)
-//console.log("resp.data:", resp.data.dataRole)
+console.log("resp.data:", resp.data?.dataRole?? "no data")
 
 ---
 

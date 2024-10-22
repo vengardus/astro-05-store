@@ -5,6 +5,7 @@ import { getActionError } from "@/utils/get-action-error";
 import { initResponseAction } from "@/utils/init-response";
 
 export const getAll = async(): Promise<ResponseAction> => {
+    console.log("getAll")
     const resp = initResponseAction();
 
     try {

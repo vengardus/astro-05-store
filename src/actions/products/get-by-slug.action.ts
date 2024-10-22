@@ -1,7 +1,7 @@
 import type { ResponseAction } from "@/interfaces/app/response.interface";
+import prisma from "@/libs/prisma";
 import { getActionError } from "@/utils/get-action-error";
 import { initResponseAction } from "@/utils/init-response";
-import { db, eq, Product, ProductImage } from "astro:db";
 
 interface Props {
   slug: string;
@@ -22,9 +22,27 @@ export const getBySlug = async ({ slug }: Props): Promise<ResponseAction> => {
       return resp
     }
 
-    const [product] = await db.select().from(Product).where(eq(Product.slug, slug)).limit(1);
+    //const [product] = await db.select().from(Product).where(eq(Product.slug, slug)).limit(1);
+    const product = await prisma.productModel.findUnique({
+      where: {
+        slug
+      },
+      include: {
+        images: {
+          take: 2
+        }
+      },
+    })
+    
     if (!product) throw new Error('Product not found')
-    const images = await db.select().from(ProductImage).where(eq(ProductImage.productId, product.id)).limit(2);
+
+    //const images = await db.select().from(ProductImage).where(eq(ProductImage.productId, product.id)).limit(2);
+    const images = await prisma.productImageModel.findMany({
+      where: {
+        productId: product.id
+      },
+      take: 2
+    })
     resp.data = {
       product,
       //images: images.map(image => image.image)

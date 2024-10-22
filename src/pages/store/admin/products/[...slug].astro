@@ -27,7 +27,7 @@ else {
     tags: "",
     gender: "",
     type: "",
-    user: "",
+    userId: "",
   } as Product;
 }
 const product = _product as Product;
@@ -323,9 +323,12 @@ const images = resp.data.images as IProductImage[];
       const selectedSizes = getSelectedSizes();
       formData.set("sizes", selectedSizes.join(","));
       const formValues = Object.fromEntries(formData.entries());
-      console.log(formValues);
+      console.log("formValues",formValues);
 
       const resp = await actions.createUpdateProduct.orThrow(formData);
+      //const resp = await actions.getAllTest.orThrow({});
+
+      console.log("resp:..slug:", resp)
 
       if (!resp.success || !resp.data.product) {
         return alert(resp.message);

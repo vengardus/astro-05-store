@@ -1,0 +1,12 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import { actions } from "astro:actions";
+
+const resp = await Astro.callAction(actions.seedData.orThrow, {})
+
+console.log("resp:", resp)
+---
+
+<MainLayout title="Vengardus - Seed">
+  <h1 class="text-3xl text-blue-500">Seed</h1>
+</MainLayout>

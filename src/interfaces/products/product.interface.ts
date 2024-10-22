@@ -13,6 +13,6 @@ export interface Product {
   type: string;
   gender: string;
 
-  user?: string;
+  user: User;
   userId: string;
 }

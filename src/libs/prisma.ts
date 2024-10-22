@@ -1,7 +1,14 @@
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  return new PrismaClient({
+    transactionOptions: {
+      isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      maxWait: 7000, // default: 2000
+      timeout: 10000, // default: 5000
+    },
+  }
+  )
 }
 
 declare const globalThis: {

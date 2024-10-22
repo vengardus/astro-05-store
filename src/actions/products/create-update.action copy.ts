@@ -24,21 +24,18 @@ export const createUpdate = async (
 
     const isNewProduct = form.id === "new";
     if (isNewProduct) form.id = undefined;
-    
-    console.log("form", form);
-
     const { id = UUID(), imageFiles, ...rest } = form;
     rest.slug = rest.slug?.toLowerCase().replace(" ", "-").trim();
 
     const user_ = await prisma.userModel.findUnique({
       where: {
-        id: user?.id!,
-      },
-    });
-    //console.log("user", user);
+        id: user?.id!
+      }
+    })
     if (!user_) {
-      throw new Error(`User not found: ${user?.id}`);
+      throw new Error('User not found')
     }
+
 
     const product = {
       id,
@@ -57,7 +54,7 @@ export const createUpdate = async (
       //user: user_
     };
 
-    //console.log("product", product, isNewProduct);
+    console.log("product", product, isNewProduct);
 
     // Transaccion
 
@@ -65,12 +62,9 @@ export const createUpdate = async (
       // producto
       if (isNewProduct)
         await prisma.productModel.create({ data: product }); //
-      else
-        await prisma.productModel.update({
-          where: { id: product.id },
-          data: product,
-        });
-
+      else 
+        await prisma.productModel.update({ where: { id: product.id }, data: product });
+      
       // Images
       const secureUrls: string[] = [];
       console.log("imageFiles", imageFiles);
@@ -94,6 +88,7 @@ export const createUpdate = async (
         };
 
         await prisma.productImageModel.create({ data: imageObj });
+        
       });
 
       // imageFiles?.forEach(async (imageFile) => {
@@ -103,8 +98,8 @@ export const createUpdate = async (
 
       //await db.batch(queries);
       return {
-        product,
-      };
+        product
+      }
     });
 
     resp.data = {
